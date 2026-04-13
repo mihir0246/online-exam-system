@@ -22,27 +22,18 @@ let userlogin = (req,res,next)=>{
                res.json(info);
             }
             else{
-                req.login({_id:user._id}, {session: false}, (err) => {
-                    if (err) {
-                        res.json({
-                            success: false,
-                            message: "Server Error"
-                        });
-                    }
-        
-                    var token = jwt.sign({_id:user._id},config.get('jwt.secret'),{expiresIn: 5000000});
-                    res.json({
-                        success: true,
-                        message: "login successful",
-                        user: {
-                            name : user.name,
-                            type: user.type,
-                            _id : user._id,
-                            emailid : user.emailid,
-                            contact : user.contact
-                        },
-                        token: token
-                    });
+                var token = jwt.sign({_id:user._id},config.get('jwt.secret'),{expiresIn: 5000000});
+                res.json({
+                    success: true,
+                    message: "login successful",
+                    user: {
+                        name : user.name,
+                        type: user.type,
+                        _id : user._id,
+                        emailid : user.emailid,
+                        contact : user.contact
+                    },
+                    token: token
                 });
             }
             })(req,res,next);     
