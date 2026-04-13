@@ -90,9 +90,9 @@ app.use(function(req, res, next) {
 
 app.use((err, req, res, next)=>{
     console.log(err);
-    res.status(err.status).json({
+    res.status(err.status || 500).json({
         success : false,
-        message : err.message
+        message : err.message || "Internal Server Error"
     });
 });
 

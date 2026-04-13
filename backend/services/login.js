@@ -8,18 +8,21 @@ var config = require('config');
 
 let userlogin = (req,res,next)=>{
     req.check('emailid', ` Invalid email address`).isEmail().notEmpty();
-    req.check('password','Invalid password').isLength({min : 5,max :6});
+    req.check('password','Invalid password').isLength({min : 5,max :100});
     var errors = req.validationErrors()
     if(errors){
         res.json({
             success : false,
-            message : 'Invalid inputs',
+            message : 'Invalid inputs: ' + errors.map(e => e.msg).join(', '),
             errors : errors
         })
     }else{
         passport.authenticate('login',{session:false},(err,user,info)=>{
-            if(err || !user){
-               res.json(info);
+            if (err) {
+               return res.json({ success: false, message: "Database Error: " + (err.message || "Please try again later.") });
+            }
+            if (!user) {
+               return res.json(info);
             }
             else{
                 var token = jwt.sign({_id:user._id},config.get('jwt.secret'),{expiresIn: 5000000});
