@@ -1,12 +1,12 @@
 {
     "mongodb": {
-        "connectionString": "mongodb://admin:admin123@ds131296.mlab.com:31296/ecell"
+        "connectionString": "mongodb+srv://mihirsonawane:mihir@cluster0.sfexjam.mongodb.net/ecell?appName=Cluster0"
     },
     "jwt": {
-        "secret" : "Examination Portal Application"
+        "secret": "Examination Portal Application"
     },
-    "mail-credentials" : {
-        "userid" :"<smtp server userId>",
-        "password" : "<smtp server password>"
+    "mail-credentials": {
+        "userid": "<smtp server userId>",
+        "password": "<smtp server password>"
     }
 }

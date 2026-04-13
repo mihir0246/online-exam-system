@@ -43,8 +43,8 @@ const envoirnment = process.env.NODE_ENV;
     MAX_MARKS_FETCH:'/api/v1/test/max/marks'
 }*/
 const apis={
-    BASE_LOCAL_URL:envoirnment==='development'?'http://localhost:3000':'',
-    BASE : envoirnment==='development'?'http://localhost:5000':'',
+    BASE_LOCAL_URL: process.env.REACT_APP_API_BASE_URL || (envoirnment==='development'?'http://localhost:3000':''),
+    BASE : process.env.REACT_APP_API_BASE_URL || (envoirnment==='development'?'http://localhost:5000':''),
     LOGIN : "/api/v1/login/",
     GETDETAILSUSER : "/api/v1/user/details",
     GET_ALL_TRAINER :'/api/v1/admin/trainer/details/all',

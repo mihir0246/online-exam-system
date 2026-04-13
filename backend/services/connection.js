@@ -16,7 +16,7 @@ const options = {
   useFindAndModify :  false
 };
 
-mongoose.connect(config.get('mongodb.connectionString'),options).then(()=>{
+mongoose.connect(process.env.MONGODB_URI || config.get('mongodb.connectionString'),options).then(()=>{
     console.log("connected to mongoDB");
     //tool.createadmin();
 }).catch((err)=>{
