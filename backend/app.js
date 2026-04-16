@@ -75,6 +75,11 @@ app.use('/api/v1/lala',dummy);
 
 app.use('/api/v1/login',login);
 
+// Health check route for AWS Elastic Beanstalk
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'UP', timestamp: new Date() });
+});
+
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/public/index.html'));
 });

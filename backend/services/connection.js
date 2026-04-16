@@ -10,11 +10,24 @@ const options = {
   autoIndex: false
 };
 
+// Logs for debugging Beanstalk environment variables (Masking sensitive parts)
+console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
+console.log("JWT_SECRET exists:", !!process.env.JWT_SECRET);
+console.log("S3_BUCKET_NAME exists:", !!process.env.S3_BUCKET_NAME);
+
 mongoose.connect(process.env.MONGODB_URI || config.get('mongodb.connectionString'),options).then(()=>{
     console.log("connected to mongoDB");
     //tool.createadmin();
 }).catch((err)=>{
-    console.log("Error connecting to database",err);
+    console.error("CRITICAL: Error connecting to database!");
+    console.error("Error Message:", err.message);
+    console.error("Error Code:", err.code);
+    if (err.message.includes("authentication failed")) {
+        console.error("Check your MONGODB_URI username and password.");
+    }
+    if (err.message.includes("ECONNREFUSED") || err.message.includes("TIMEOUT")) {
+        console.error("Network issue: Ensure your Atlas IP Whitelist allows Access from Anywhere (0.0.0.0/0).");
+    }
 })
 
 
