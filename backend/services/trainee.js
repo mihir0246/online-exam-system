@@ -97,33 +97,29 @@ let correctAnswers = (req,res,next)=>{
                 path:'options',
                 model:options
             }
-    }).exec(function (err, correctAnswers){
-        if(err){
-            console.log(err)
-            res.status(500).json({
+    }).exec().then((correctAnswers) => {
+        if(!correctAnswers){
+            res.json({
                 success : false,
-                message : "Unable to fetch details"
+                message : 'Invalid test id.'
             })
+
         }
         else{
-            if(!correctAnswers){
-                res.json({
-                    success : false,
-                    message : 'Invalid test id.'
-                })
+            res.json({
+                success : true,
+                message : 'Success',
+                data : correctAnswers
+            })
 
-            }
-            else{
-                res.json({
-                    success : true,
-                    message : 'Success',
-                    data : correctAnswers
-                })
-
-            }
         }
-
-    })
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch details"
+        })
+    });
 }
 
 let feedback = (req,res,next)=>{
@@ -222,33 +218,29 @@ let Testquestions = (req,res,next)=>{
        }
 
 })
-   .exec(function (err, Testquestions){
-       if(err){
-           console.log(err)
-           res.status(500).json({
+   .exec().then((Testquestions) => {
+       if(!Testquestions){
+           res.json({
                success : false,
-               message : "Unable to fetch details"
+               message : 'Invalid test id.'
            })
+
        }
        else{
-           if(!Testquestions){
-               res.json({
-                   success : false,
-                   message : 'Invalid test id.'
-               })
+           res.json({
+               success : true,
+               message : 'Success',
+               data : Testquestions.questions
+           })
 
-           }
-           else{
-               res.json({
-                   success : true,
-                   message : 'Success',
-                   data : Testquestions.questions
-               })
-
-           }
        }
-
-   })
+   }).catch((err) => {
+       console.log(err)
+       res.status(500).json({
+           success : false,
+           message : "Unable to fetch details"
+       })
+   });
 
 }
 
@@ -277,36 +269,34 @@ let Answersheet = (req,res,next)=>{
                             userid:userid
                         })
                     })
-                    AnswersModel.insertMany(answer,(err,ans)=>{
-                        if(err){
-                            console.log(err);
+                    AnswersModel.insertMany(answer).then((ans) => {
+                        var startTime = new Date();
+                        var tempdata = AnswersheetModel({
+                            startTime:startTime,
+                            questions : qus,
+                            answers:ans,
+                            testid:testid,
+                            userid:userid
+                        })
+                        tempdata.save().then((Answersheet)=>{
+                            res.json({
+                                success : true,
+                                message : 'Test has started!'
+                            })
+
+                        }).catch((error)=>{
                             res.status(500).json({
                                 success : false,
-                                message : "Unable to create Answersheet!"
+                                message : "Unable to fetch details"
                             })
-                        }else{
-                            var startTime = new Date();
-                            var tempdata = AnswersheetModel({
-                                startTime:startTime,
-                                questions : qus,
-                                answers:ans,
-                                testid:testid,
-                                userid:userid
-                            })
-                            tempdata.save().then((Answersheet)=>{
-                                res.json({
-                                    success : true,
-                                    message : 'Test has started!'
-                                })
-
-                            }).catch((error)=>{
-                                res.status(500).json({
-                                    success : false,
-                                    message : "Unable to fetch details"
-                                })
-                            })
-                        }
-                    })
+                        })
+                    }).catch((err) => {
+                        console.log(err);
+                        res.status(500).json({
+                            success : false,
+                            message : "Unable to create Answersheet!"
+                        })
+                    });
                 }
             })
         }
@@ -436,21 +426,18 @@ let chosenOptions = (req,res,next)=>{
     var userid = req.body.userid;
     AnswersheetModel.findOne({testid : testid,userid : userid},{answers : 1})
     .populate('answers')
-    .exec(function(err,answersheet){
-        if(err){
-            res.json({
-                success : false,
-                message : 'Answersheet does not exist'
-            })
-            
-        }else{
-            res.json({
-                success : true,
-                message : 'Chosen Options',
-                data : answersheet
-            })
-        }
-    })
+    .exec().then((answersheet) => {
+        res.json({
+            success : true,
+            message : 'Chosen Options',
+            data : answersheet
+        })
+    }).catch((err) => {
+        res.json({
+            success : false,
+            message : 'Answersheet does not exist'
+        })
+    });
 
 }
 
@@ -552,30 +539,27 @@ let getQuestion = (req,res,next)=>{
                 select : {'optbody' : 1,'optimg' : 1}
             
     })
-        .exec(function (err, question) {
-            if (err){
-                console.log(err)
-                res.status(500).json({
+        .exec().then((question) => {
+            if(question.length===0){
+                res.json({
                     success : false,
-                    message : "Unable to fetch data"
+                    message : `No such question exists`,
                 })
             }
             else{
-                if(question.length===0){
-                    res.json({
-                        success : false,
-                        message : `No such question exists`,
-                    })
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : `Success`,
-                        data : question
-                    })
-                }   
-            }
-        })        
+                res.json({
+                    success : true,
+                    message : `Success`,
+                    data : question
+                })
+            }   
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch data"
+            })
+        });        
     }
 
 

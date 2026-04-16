@@ -22,11 +22,7 @@ let result = (testid,MaxMarks)=>{
         ResultModel.find({testid : testid},{score : 1,userid : 1,testid: 1})
         .populate('userid')
         .populate('testid')
-        .exec(function(err,results){
-          if(err){
-            console.log(err);
-            reject(err)
-          }else{
+        .exec().then((results)=>{
             //console.log(results)
             //resolve(results)
             //excel sheet
@@ -74,8 +70,10 @@ let result = (testid,MaxMarks)=>{
                reject(err)
             })
           
-          }
-        })
+        }).catch((err) => {
+            console.log(err);
+            reject(err)
+        });
       }
     }).catch((err)=>{
           reject(err)

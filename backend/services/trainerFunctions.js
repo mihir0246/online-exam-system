@@ -34,48 +34,45 @@ let createQuestion = (req,res,next)=>{
                 QuestionModel.findOne({ body : body,status:1 },{status:0})
                 .then((info)=>{
                     if(!info){
-                        options.insertMany(option,(err,op)=>{
-                            if(err){
+                        options.insertMany(option).then((op) => {
+                            var ra=[];
+                            console.log(op)
+                            op.map((d,i)=>{
+                                if(d.isAnswer){
+                                    ra.push(d._id)
+                                }
+                            })
+                            var tempdata = QuestionModel({
+                                body: body,
+                                explanation : explanation,
+                                quesimg : quesimg,
+                                subject : subjectid,
+                                difficulty :difficulty,
+                                options:op,
+                                createdBy : req.user._id,
+                                anscount:anscount,
+                                weightage : weightage,
+                                rightAnswers:ra
+                            })
+                            tempdata.save().then(()=>{
+                                res.json({
+                                    success : true,
+                                    message : `New question created successfully!`
+                                })
+                            }).catch((err)=>{
                                 console.log(err);
                                 res.status(500).json({
                                     success : false,
                                     message : "Unable to create new question!"
                                 })
-                            }
-                            else{
-                                var ra=[];
-                                console.log(op)
-                                op.map((d,i)=>{
-                                    if(d.isAnswer){
-                                        ra.push(d._id)
-                                    }
-                                })
-                                var tempdata = QuestionModel({
-                                    body: body,
-                                    explanation : explanation,
-                                    quesimg : quesimg,
-                                    subject : subjectid,
-                                    difficulty :difficulty,
-                                    options:op,
-                                    createdBy : req.user._id,
-                                    anscount:anscount,
-                                    weightage : weightage,
-                                    rightAnswers:ra
-                                })
-                                tempdata.save().then(()=>{
-                                    res.json({
-                                        success : true,
-                                        message : `New question created successfully!`
-                                    })
-                                }).catch((err)=>{
-                                    console.log(err);
-                                    res.status(500).json({
-                                        success : false,
-                                        message : "Unable to create new question!"
-                                    })
-                                })
-                            }
-                        })
+                            })
+                        }).catch((err) => {
+                            console.log(err);
+                            res.status(500).json({
+                                success : false,
+                                message : "Unable to create new question!"
+                            })
+                        });
                     }
                     else{
                         res.json({
@@ -137,22 +134,19 @@ let getAllQuestions = (req,res,next)=>{
             .populate('createdBy', 'name')
             .populate('subject', 'topic')
             .populate('options')
-            .exec(function (err, question) {
-                if (err){
-                    console.log(err)
-                    res.status(500).json({
-                        success : false,
-                        message : "Unable to fetch data"
-                    })
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : `Success`,
-                        data : question
-                    })
-                }
-            })        
+            .exec().then((question) => {
+                res.json({
+                    success : true,
+                    message : `Success`,
+                    data : question
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    success : false,
+                    message : "Unable to fetch data"
+                })
+            });        
 
         }
         else{
@@ -160,22 +154,19 @@ let getAllQuestions = (req,res,next)=>{
             .populate('createdBy', 'name')
             .populate('subject', 'topic')
             .populate('options')
-            .exec(function (err, question) {
-                if (err){
-                    console.log(err)
-                    res.status(500).json({
-                        success : false,
-                        message : "Unable to fetch data"
-                    })
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : `Success`,
-                        data : question
-                    })
-                }
-            })        
+            .exec().then((question) => {
+                res.json({
+                    success : true,
+                    message : `Success`,
+                    data : question
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    success : false,
+                    message : "Unable to fetch data"
+                })
+            });        
         }
         }
     else{
@@ -198,30 +189,27 @@ let getSingleQuestion = (req,res,next)=>{
         .populate('questions', 'body')
         .populate('subject', 'topic')
         .populate('options')
-        .exec(function (err, question) {
-            if (err){
-                console.log(err)
-                res.status(500).json({
+        .exec().then((question) => {
+            if(question.length===0){
+                res.json({
                     success : false,
-                    message : "Unable to fetch data"
+                    message : `No such question exists`,
                 })
             }
             else{
-                if(question.length===0){
-                    res.json({
-                        success : false,
-                        message : `No such question exists`,
-                    })
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : `Success`,
-                        data : question
-                    })
-                }   
-            }
-        })        
+                res.json({
+                    success : true,
+                    message : `Success`,
+                    data : question
+                })
+            }   
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch data"
+            })
+        });        
     }
     else{
         res.status(401).json({

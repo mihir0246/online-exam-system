@@ -9,7 +9,7 @@ let get = (uri,params=null)=>{
         url : uri,
         baseURL : base,
         params : {
-            Token : 't',
+            Token : LocalAuth.retriveToken(),
             ...params
         }
     });
@@ -17,11 +17,11 @@ let get = (uri,params=null)=>{
 
 let post = (uri,params=null,data=null,others={})=>{
     return axios({
-        method : 'get',
+        method : 'post',
         url : uri,
         baseURL : base,
         params : {
-            Token : 't',
+            Token : LocalAuth.retriveToken(),
             ...params
         },
         data : data,

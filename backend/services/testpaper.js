@@ -119,22 +119,19 @@ let getSingletest = (req,res,next)=>{
             model: options,
         }
     })
-    .exec(function (err, testpaper) {
-        if (err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch data"
-            })
-        }
-        else{
-            res.json({
-                success : true,
-                message : `Success`,
-                data : testpaper
-            })   
-        }
-    })        
+    .exec().then((testpaper) => {
+        res.json({
+            success : true,
+            message : `Success`,
+            data : testpaper
+        })   
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch data"
+        })
+    });        
 }
 
 let getAlltests = (req,res,next)=>{
@@ -154,22 +151,19 @@ let getAlltests = (req,res,next)=>{
 
         })
         
-            .exec(function (err, testpaper) {
-                if (err){
-                    console.log(err)
-                    res.status(500).json({
-                        success : false,
-                        message : "Unable to fetch data"
-                    })
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : `Success`,
-                        data : testpaper
-                    })
-                }
-            })        
+            .exec().then((testpaper) => {
+                res.json({
+                    success : true,
+                    message : `Success`,
+                    data : testpaper
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    success : false,
+                    message : "Unable to fetch data"
+                })
+            });        
         
         }
     else{
@@ -213,29 +207,27 @@ let TestDetails = (req,res,next)=>{
         let testid = req.body.id;
         TestPaperModel.findOne({_id:testid,createdBy : req.user._id},{isResultgenerated:0,isRegistrationavailable:0,createdBy:0,status:0,testbegins:0,questions : 0})
         .populate('subjects', 'topic')
-        .exec(function(err,TestDetails){
-                if(err){
-                    console.log(err)
-                    res.status(500).json({
-                        success : false,
-                        message : "Unable to fetch details"
-                    })
-                }else{
-                    if(!TestDetails){
-                        res.json({
-                            success : false,
-                            message : 'Invalid test id.'
-                        })
-                    }else{
-                        res.json({
-                            success : true,
-                            message : 'Success',
-                            data : TestDetails
-                        })
+        .exec().then((TestDetails) => {
+            if(!TestDetails){
+                res.json({
+                    success : false,
+                    message : 'Invalid test id.'
+                })
+            }else{
+                res.json({
+                    success : true,
+                    message : 'Success',
+                    data : TestDetails
+                })
 
-                    }
-                }
-        })
+            }
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch details"
+            })
+        });
     }else{
         res.status(401).json({
             success : false,
@@ -250,33 +242,29 @@ let basicTestdetails = (req,res,next)=>{
         TestPaperModel.findById(testid,{questions:0})
         .populate('createdBy', 'name')
         .populate('subjects', 'topic')
-        .exec(function (err, basicTestdetails){
-            if(err){
-                console.log(err)
-                res.status(500).json({
+        .exec().then((basicTestdetails) => {
+            if(!basicTestdetails){
+                res.json({
                     success : false,
-                    message : "Unable to fetch details"
+                    message : 'Invalid test id.'
                 })
+
             }
             else{
-                if(!basicTestdetails){
-                    res.json({
-                        success : false,
-                        message : 'Invalid test id.'
-                    })
+                res.json({
+                    success : true,
+                    message : 'Success',
+                    data : basicTestdetails
+                })
 
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : 'Success',
-                        data : basicTestdetails
-                    })
-
-                }
             }
-
-        })
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch details"
+            })
+        });
     }
     else{
         res.status(401).json({
@@ -303,33 +291,29 @@ let basicTestdetails = (req,res,next)=>{
             }
 
     })
-        .exec(function (err, getTestquestions){
-            if(err){
-                console.log(err)
-                res.status(500).json({
+        .exec().then((getTestquestions) => {
+            if(!getTestquestions){
+                res.json({
                     success : false,
-                    message : "Unable to fetch details"
+                    message : 'Invalid test id.'
                 })
+
             }
             else{
-                if(!getTestquestions){
-                    res.json({
-                        success : false,
-                        message : 'Invalid test id.'
-                    })
+                res.json({
+                    success : true,
+                    message : 'Success',
+                    data : getTestquestions.questions
+                })
 
-                }
-                else{
-                    res.json({
-                        success : true,
-                        message : 'Success',
-                        data : getTestquestions.questions
-                    })
-
-                }
             }
-
-        })
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch details"
+            })
+        });
     }
     else{
         res.status(401).json({
@@ -345,14 +329,7 @@ let basicTestdetails = (req,res,next)=>{
         var testid = req.body.testid;
        ResultModel.find({testid : testid},{score : 1, userid : 1})
        .populate('userid')
-       .exec(function(err,getCandidateDetails){
-        if(err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch details"
-            })
-        }else{
+       .exec().then((getCandidateDetails) => {
             if(getCandidateDetails.length==null){
                 res.json({
                     success : false,
@@ -365,8 +342,13 @@ let basicTestdetails = (req,res,next)=>{
                     data : getCandidateDetails
                 })
             }
-          }
-       })
+       }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                success : false,
+                message : "Unable to fetch details"
+            })
+       });
     }
     else{
         res.status(401).json({
@@ -499,23 +481,21 @@ let basicTestdetails = (req,res,next)=>{
             model : QuestionModel,
             select : {'weightage' : 1}
         })
-        .exec(function(err,Ma){
-            if(err){
-                console.log(err)
-                reject(err)
+        .exec().then((Ma) => {
+            if(!Ma){
+                reject(new Error('Invalid testid'))
             }else{
-                if(!Ma){
-                    reject(new Error('Invalid testid'))
-                }else{
-                    let m = 0;
-                    Ma.questions.map((d,i)=>{
-                        m+=d.weightage;
-                    })
-                    console.log(m)
-                    resolve(m)
-                }
+                let m = 0;
+                Ma.questions.map((d,i)=>{
+                    m+=d.weightage;
+                })
+                console.log(m)
+                resolve(m)
             }
-        })
+        }).catch((err) => {
+            console.log(err)
+            reject(err)
+        });
 
     })
 }

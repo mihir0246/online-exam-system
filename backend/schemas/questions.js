@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var UserModel = require("../models/user");
 
 
 var questionschema = new mongoose.Schema({

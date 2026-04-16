@@ -53,7 +53,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 
 //bind routes

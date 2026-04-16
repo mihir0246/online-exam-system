@@ -16,13 +16,7 @@ passport.use('login',new LocalStrategy({
   passReqToCallback : true 
   },
   function(req,emailid, password, done) {
-    UserModel.findOne({ 'emailid' : emailid, 'status' : true }, function (err, user) {
-      if (err) {
-          return done(err,false,{
-              success: false,
-              message: "Server Error"
-          }); 
-      }
+    UserModel.findOne({ 'emailid' : emailid, 'status' : true }).then((user) => {
       if (!user) {
           return done(null, false,{
               success: false,
@@ -45,6 +39,11 @@ passport.use('login',new LocalStrategy({
             }
           });
         }
+    }).catch((err) => {
+        return done(err,false,{
+            success: false,
+            message: "Server Error"
+        });
     });
   }
 ));
@@ -59,13 +58,7 @@ opts.jwtFromRequest = ExtractJwt.fromUrlQueryParameter('Token');
 opts.secretOrKey = config.get('jwt.secret');
 
 passport.use('user-token',new JwtStrategy(opts, function(jwt_payload, done) {
-  UserModel.findById(jwt_payload._id, function(err, user) {
-        if (err) {
-            return done(err, false,{
-                success: false,
-                message: "Server Error"
-            }); 
-        }
+  UserModel.findById(jwt_payload._id).then((user) => {
         if (user) {
             return done(null, user,{
                 success: true,
@@ -77,6 +70,11 @@ passport.use('user-token',new JwtStrategy(opts, function(jwt_payload, done) {
                 message: "Authentication Failed"
             });
         }
+    }).catch((err) => {
+        return done(err, false,{
+            success: false,
+            message: "Server Error"
+        }); 
     });
 }));
 

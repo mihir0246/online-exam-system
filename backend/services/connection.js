@@ -7,13 +7,7 @@ let tool = require("./tool")
 //database connection
 mongoose.Promise = global.Promise;
 const options = {
-  autoIndex: false, 
-  reconnectTries: 100,
-  reconnectInterval: 500, 
-  poolSize: 10, 
-  bufferMaxEntries: 0,
-  useNewUrlParser: true,
-  useFindAndModify :  false
+  autoIndex: false
 };
 
 mongoose.connect(process.env.MONGODB_URI || config.get('mongodb.connectionString'),options).then(()=>{

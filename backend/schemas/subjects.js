@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var UserModel = require("../models/user");
 
 var subjectschema = new mongoose.Schema({
     topic : {

@@ -87,22 +87,19 @@ let getAllSubjects = (req,res,next)=>{
     SubjectModel.find({status : 1},{createdAt: 0, updatedAt : 0})
     .populate('createdBy', 'name')
     
-    .exec(function (err, subject) {
-        if (err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch data"
-            })
-        }
-        else{
-            res.json({
-                success : true,
-                message : `Success`,
-                data : subject
-            })   
-        }
-    })        
+    .exec().then((subject) => {
+        res.json({
+            success : true,
+            message : `Success`,
+            data : subject
+        })   
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch data"
+        })
+    });        
 
 }
 
@@ -111,22 +108,19 @@ let getSingleSubject = (req,res,next)=>{
     console.log(id);
     SubjectModel.find({_id: id},{createdAt: 0, updatedAt : 0,status : 0})
     .populate('createdBy', 'name')
-    .exec(function (err, subject) {
-        if (err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch data"
-            })
-        }
-        else{
-            res.json({
-                success : true,
-                message : `Success`,
-                data : subject
-            })   
-        }
-    })        
+    .exec().then((subject) => {
+        res.json({
+            success : true,
+            message : `Success`,
+            data : subject
+        })   
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch data"
+        })
+    });        
 }
 
     module.exports = { createEditsubject ,getAllSubjects, getSingleSubject}

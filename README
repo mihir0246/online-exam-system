@@ -1,19 +1,55 @@
-Name : Online Examination System
-Technologies : React js, Node js, Express js, Mongo Db, Ant Design, Redux js
-Key features:
-    1. User management
-    2. Modular code
-    3. Permission management
-    4. Persistent answers on page refresh in the test portal
-    5. Examination results using graphs
-    6. Results can directly be downloaded as excel sheet
-    7. Feedback system
+# Online Examination System
 
+## Overview
+A modern MERN-stack Online Examination System that allows administrators to safely register trainers, build test portals, and generate insightful excel-sheet results from candidate attempts.
 
+## Core Tech Stack
+- **Frontend**: React.js, Ant Design, Redux.js
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
 
-Steps to use:
-1. open the default.json file located inside the config folder in backend directory.
-2. Make the required changes in it
-3. Call the `createadmin`(located inside tool.js inside services) function after putting admin details in it from app.js file and run the server
-3. To run the server, use "nodemon" in backend directory
-4. Once an admin account is created, remove the `createadmin` invocation from app.js and restart the server.
+---
+
+## Cloud Infrastructure Setup & Deployment
+
+This application was modernized and heavily refactored to be production-ready and fully scaleable on Amazon Web Services (AWS). Below is a detailed breakdown of the cloud configurations and why they are implemented:
+
+### 1. MongoDB Atlas (Database)
+- **What it is**: A NoSQL cloud database hosting our Mongoose clusters.
+- **How it's connected**: The backend connects using a URI connection string via `mongoose.connect()`. Network Access in Atlas was whitelisted to `0.0.0.0/0` to allow AWS Dynamic IPs to interact with the database without facing timeouts.
+- **Why we used it**: MongoDB is excellent for JSON-heavy operations and rapid iterations.
+
+### 2. AWS VPC (Virtual Private Cloud)
+- **What it is**: A secure and isolated private network environment governed by AWS.
+- **How it's connected**: Our EC2 instances running the backend server sit inside this VPC. We utilize Security Groups to act as virtual firewalls mapping inbound ports (like Port 80 for HTTP).
+- **Why we used it**: Provides an essential layer of network security to ensure our backend components are only accessible through designated API routing configurations rather than arbitrary open web ports.
+
+### 3. AWS IAM (Identity and Access Management)
+- **What it is**: The system AWS uses to govern granular permissions.
+- **How it's connected**: We provisioned an IAM Instance Profile (like `aws-elasticbeanstalk-ec2-role`) and attached it to our backend host computers.
+- **Why we used it**: Principle of least privilege. Elastic Beanstalk instances needed secure programmatic access to pull system definitions and write logs without hard-coding secret credentials inside our frontend or backend code.
+
+### 4. AWS EC2 (Elastic Compute Cloud)
+- **What it is**: Virtual Server instances.
+- **How it's connected**: Provisioned automatically beneath the surface of Elastic Beanstalk. Nginx acts as a reverse proxy on them to forward traffic directly into Node.js.
+- **Why we used it**: EC2 supplies the raw computing power. We needed an always-on dedicated server loop to manage business rules (e.g. Test Timers, Passport JWT verification, and generating analytical graphs).
+
+### 5. AWS Elastic Beanstalk (Backend Hosting)
+- **What it is**: A Platform-as-a-Service (PaaS) orchestration tool.
+- **How it's connected**: The `backend/` folder is packaged into a `.zip` file and uploaded directly. Beanstalk automatically runs `npm install` and runs `package.json`'s start commands.
+- **Why we used it**: Eliminates the brutal underlying work of setting up raw EC2 servers. It manages server autoscaling, operating system patching, and Node.js environment configuration entirely, letting us focus on code.
+
+### 6. AWS Amplify (Frontend Hosting)
+- **What it is**: A tailored hosting service for full-stack and Single-Page Applications (SPAs).
+- **How it's connected**: It points directly to the original GitHub repository. Upon a push, it builds the React code into production assets (`npm run build`).
+- **Why we used it**: Amplify natively offers global CDN distribution, HTTPS SSL Certificates, and unhandled-route redirecting (vital for React Router). We exposed an Environment Variable named `REACT_APP_API_BASE_URL` inside Amplify config to safely point the browser requests straight to the active Elastic Beanstalk URL.
+
+---
+
+## Recent Modernizations & Fixes
+
+To achieve full production stabilization, the following massive improvements were made to the core system:
+
+1. **CORS & SPA Fallbacks**: Repaired `Apis.js`. In production, the API routes were falling back to `""` triggering React to query its own static HTML files. Injecting process environment logic (`REACT_APP_API_BASE_URL`) established the seamless connection between the frontend Amplify app and the backend Beanstalk system!
+2. **Global Crash Handling**: Fixed critical NodeJS crash states (`RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: undefined`). The global backend Error Handler now intelligently intercepts severed Database connectivity without immediately destroying the active web server. 
+3. **Password Expansion**: Resolved frustrating UX bottlenecks during Trainer additions. The restrictive `{max: 6}` character limit via express-validator in both the global Register and Login controllers was expanded to `{max: 100}`, with clear context-aware validation popups mapping directly back to the active user's form view.
