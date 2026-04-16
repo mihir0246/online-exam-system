@@ -7,7 +7,8 @@ let tool = require("./tool")
 //database connection
 mongoose.Promise = global.Promise;
 const options = {
-  autoIndex: false
+  autoIndex: false,
+  dbName: 'online-exam' // Explicitly set the database name for Mongoose 8.x compatibility
 };
 
 // Logs for debugging Beanstalk environment variables (Masking sensitive parts)
