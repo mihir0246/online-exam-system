@@ -5,11 +5,14 @@ let tool = require("./tool");
 
 
 let createQuestion = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         req.check('body', `Invalid question!`).notEmpty();
         req.check('subject', 'Enter subject!').notEmpty();
         var errors = req.validationErrors()
         if(errors){
+            console.log("QUESTION CREATION VALIDATION FAILED:");
+            console.log("Body:", req.body);
+            console.log("Errors:", errors);
             res.json({
                 success : false,
                 message : 'Invalid inputs',
@@ -97,7 +100,7 @@ let createQuestion = (req,res,next)=>{
 
 
 let deleteQuestion = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         var _id =  req.body._id;
         QuestionModel.findOneAndUpdate({
             _id : _id
@@ -127,7 +130,7 @@ let deleteQuestion = (req,res,next)=>{
 
 
 let getAllQuestions = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         var subject = req.body.subject;
         if(subject.length!==0){
             QuestionModel.find({subject : subject,status : 1},{status : 0})
@@ -182,7 +185,7 @@ let getAllQuestions = (req,res,next)=>{
 
 
 let getSingleQuestion = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         let _id = req.params._id;
         console.log(_id);
         QuestionModel.find({_id : _id , status : 1},{status : 0})

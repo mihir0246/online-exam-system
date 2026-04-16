@@ -8,6 +8,16 @@ export const AdminPermissions = [
         display : 'All Subjects',
         icon : 'file-text',
         link : '/user/listsubjects' 
+    },
+    {
+        display : 'All Questions',
+        icon : 'question-circle',
+        link : '/user/listquestions'
+    },
+    {
+        display : 'All tests',
+        icon : 'form',
+        link : '/user/listtests'
     }
 
 ]

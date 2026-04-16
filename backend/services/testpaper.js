@@ -10,13 +10,16 @@ let ResultModel = require("../models/results");
 
 let createEditTest = (req,res,next)=>{
     var _id = req.body._id || null;
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
     req.check('type', `invalid type`).notEmpty();
     req.check('title', 'enter title').notEmpty();
     req.check('questions', 'enter questions').notEmpty();
 
     var errors = req.validationErrors()
     if(errors){
+        console.log("TEST CREATION VALIDATION FAILED:");
+        console.log("Body:", req.body);
+        console.log("Errors:", errors);
         res.json({
             success : false,
             message : 'Invalid inputs',
@@ -135,7 +138,7 @@ let getSingletest = (req,res,next)=>{
 }
 
 let getAlltests = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         var title = req.body.title;
             TestPaperModel.find({createdBy : req.user._id,status : 1},{status : 0})
             .populate('questions' , 'body')
@@ -175,7 +178,7 @@ let getAlltests = (req,res,next)=>{
 }   
 
 let deleteTest = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         var _id =  req.body._id;
         TestPaperModel.findOneAndUpdate({
             _id : _id
@@ -203,7 +206,7 @@ let deleteTest = (req,res,next)=>{
     } 
 }
 let TestDetails = (req,res,next)=>{
-    if(req.user.type === 'TRAINER'){
+    if(req.user.type === 'TRAINER' || req.user.type === 'ADMIN'){
         let testid = req.body.id;
         TestPaperModel.findOne({_id:testid,createdBy : req.user._id},{isResultgenerated:0,isRegistrationavailable:0,createdBy:0,status:0,testbegins:0,questions : 0})
         .populate('subjects', 'topic')
@@ -237,7 +240,7 @@ let TestDetails = (req,res,next)=>{
 }
 
 let basicTestdetails = (req,res,next)=>{
-    if(req.user.type==='TRAINER'){
+    if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         let testid = req.body.id;
         TestPaperModel.findById(testid,{questions:0})
         .populate('createdBy', 'name')
@@ -277,7 +280,7 @@ let basicTestdetails = (req,res,next)=>{
 }
 
  let getTestquestions = (req,res,next)=>{
-     if(req.user.type==="TRAINER"){
+     if(req.user.type==="TRAINER" || req.user.type==='ADMIN'){
          var testid = req.body.id;
          TestPaperModel.findById(testid,{type:0,title:0,subjects:0,duration:0,organisation:0,difficulty:0,testbegins:0,status:0,createdBy:0,isRegistrationavailable:0})
         .populate('questions','body')
@@ -325,7 +328,7 @@ let basicTestdetails = (req,res,next)=>{
  }
 
  let getCandidateDetails = (req,res,next)=>{
-    if(req.user.type==="TRAINER"){
+    if(req.user.type==="TRAINER" || req.user.type==="ADMIN"){
         var testid = req.body.testid;
        ResultModel.find({testid : testid},{score : 1, userid : 1})
        .populate('userid')
@@ -360,7 +363,7 @@ let basicTestdetails = (req,res,next)=>{
 
 
  let getCandidates = (req,res,next)=>{
-    if(req.user.type==="TRAINER"){
+    if(req.user.type==="TRAINER" || req.user.type==="ADMIN"){
         var testid = req.body.id;
         TraineeEnterModel.find({testid:testid},{testid:0})
         .then((getCandidates)=>{
@@ -385,7 +388,7 @@ let basicTestdetails = (req,res,next)=>{
  }
 
  let beginTest = (req,res,next)=>{
-    if(req.user.type==="TRAINER"){
+    if(req.user.type==="TRAINER" || req.user.type==="ADMIN"){
         var id = req.body.id;
         TestPaperModel.findOneAndUpdate({_id:id,testconducted : false},{testbegins:1,isRegistrationavailable:0},{new: true})
         .then((data)=>{
@@ -423,7 +426,7 @@ let basicTestdetails = (req,res,next)=>{
  }
 
  let endTest = (req,res,next)=>{
-    if(req.user.type==="TRAINER"){
+    if(req.user.type==="TRAINER" || req.user.type==="ADMIN"){
         var id = req.body.id;
         TestPaperModel.findOneAndUpdate({_id:id,testconducted:0,testbegins:1,isResultgenerated:0},{testbegins:false,testconducted:true, isResultgenerated:true},{
             new: true
@@ -502,7 +505,7 @@ let basicTestdetails = (req,res,next)=>{
 
 let MM = (req,res,next)=>{
     var testid = req.body.testid;
-    if(req.user.type === 'TRAINER'){
+    if(req.user.type === 'TRAINER' || req.user.type === 'ADMIN'){
         MaxMarks(testid).then((MaxM)=>{
             res.json({
                 success : true,
@@ -525,7 +528,7 @@ let MM = (req,res,next)=>{
  
 let checkTestName =(req,res,next)=>{
     var testName = req.body.testname;
-    if(req.user.type === 'TRAINER'){
+    if(req.user.type === 'TRAINER' || req.user.type === 'ADMIN'){
         TestPaperModel.findOne({title:testName},{_id:1}).then((data)=>{
             if(data){
                 res.json({

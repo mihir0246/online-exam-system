@@ -22,7 +22,6 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(expressValidator());
 //import other files
 var mongoose = require("./services/connection");
 var admin = require("./routes/admin");
@@ -48,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(expressValidator());
 
 
 //passport

@@ -13,6 +13,26 @@ export const ADMIN_PERMISSIONS=[
         display : 'All Courses',
         icon : 'book',
         link : '/user/listsubjects' 
+    },
+    {
+        display : 'All Questions',
+        icon : 'form',
+        link : '/user/listquestions'
+    },
+    {
+        display : 'All Tests',
+        icon : 'copy',
+        link : '/user/listtests'
+    },
+    {
+        display : 'New Test',
+        icon : 'edit',
+        link : '/user/newtest'
+    },
+    {
+        display : 'Conduct Test',
+        icon : 'edit',
+        link : '/user/conducttest'
     }
 ]   
 

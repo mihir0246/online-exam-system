@@ -13,6 +13,9 @@ let trainerRegister = (req,res,next)=>{
         req.check('contact','Invalid contact number').isLength({min : 13,max :13}).isNumeric({no_symbols: false});
         var errors = req.validationErrors()
         if(errors){
+            console.log("TRAINER REGISTRATION VALIDATION FAILED:");
+            console.log("Body:", req.body);
+            console.log("Errors:", errors);
             res.json({
                 success : false,
                 message : 'Invalid inputs: ' + errors.map(e => e.msg).join(', '),
