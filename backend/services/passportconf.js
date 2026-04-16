@@ -55,7 +55,7 @@ passport.use('login',new LocalStrategy({
 var opts = {}
 //opts.jwtFromRequest = ExtractJwt.fromHeader('authorization');
 opts.jwtFromRequest = ExtractJwt.fromUrlQueryParameter('Token');
-opts.secretOrKey = config.get('jwt.secret');
+opts.secretOrKey = process.env.JWT_SECRET || config.get('jwt.secret');
 
 passport.use('user-token',new JwtStrategy(opts, function(jwt_payload, done) {
   UserModel.findById(jwt_payload._id).then((user) => {

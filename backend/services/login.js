@@ -25,7 +25,7 @@ let userlogin = (req,res,next)=>{
                return res.json(info);
             }
             else{
-                var token = jwt.sign({_id:user._id},config.get('jwt.secret'),{expiresIn: 5000000});
+                var token = jwt.sign({_id:user._id},process.env.JWT_SECRET || config.get('jwt.secret'),{expiresIn: 5000000});
                 res.json({
                     success: true,
                     message: "login successful",
