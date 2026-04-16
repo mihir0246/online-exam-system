@@ -1,0 +1,20 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install --legacy-peer-deps
+        build:
+          commands:
+            # This line is CRITICAL for your project's react-scripts version
+            - export NODE_OPTIONS=--openssl-legacy-provider
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+    appRoot: frontend
