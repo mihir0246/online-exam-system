@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/sitrain-online/backend#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1030.0",
     "app-root-path": "^2.2.1",
     "bcryptjs": "2.4.3",
     "body-parser": "^1.19.0",
@@ -33,6 +34,7 @@
     "mongoose": "^8.11.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
+    "multer-s3": "^3.0.1",
     "nodemailer": "^6.2.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",

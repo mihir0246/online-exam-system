@@ -49,22 +49,25 @@ let result = (testid,MaxMarks)=>{
                 console.log(d.userid.name);
                 worksheet.addRow({Name: d.userid.name, Email: d.userid.emailid, Contact : d.userid.contact,Organisation : d.userid.organisation,Type : d.testid.type,Title : d.testid.title,Score : d.score,Outof:M});
               })
-              workbook.xlsx.writeFile(`result-${testid}.xlsx`)
-              .then(function(r) {
-                fs.rename(`result-${testid}.xlsx`,`public/result/result-${testid}.xlsx`, (err) => {
-                  if (err){
-                    reject(err)
-                  }
-                  else{
-                    console.log('Rename complete!');
-                    resolve("Done");
-                  }
+              
+              // New S3 logic
+              workbook.xlsx.writeBuffer().then((buffer) => {
+                  const fileName = `results/result-${testid}-${Date.now()}.xlsx`;
+                  const { uploadToS3 } = require("./s3");
                   
-                });
-              }).catch((err)=>{
-                console.log(err);
-                reject(err)
-              })
+                  uploadToS3(buffer, fileName, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                  .then((url) => {
+                      console.log('Upload to S3 complete:', url);
+                      resolve(url); // Now resolving with the public S3 URL
+                  }).catch((err) => {
+                      console.log('S3 Upload Error:', err);
+                      reject(err);
+                  });
+              }).catch((err) => {
+                  console.log('Excel Buffer Error:', err);
+                  reject(err);
+              });
+
             })
             .catch((err)=>{
                reject(err)

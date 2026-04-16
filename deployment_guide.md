@@ -59,14 +59,51 @@ In the Amplify dashboard for your app, navigate to **Environment variables** and
 | :--- | :--- | :--- |
 | `REACT_APP_API_BASE_URL` | `https://your-backend-url.aws.com` | The URL of your Elastic Beanstalk environment. |
 
----
+## 📦 Storage: AWS S3 (Persistent Files)
 
-## 📁 File Storage Note
+Since Elastic Beanstalk instances are temporary, we use **AWS S3** to store question images and Excel reports.
 
-> [!WARNING]
-> **Persistent Storage**: Currently, the system saves Excel result files to the local `public/result` directory. Elastic Beanstalk instances are **ephemeral**, meaning files saved there will be lost when the server restarts or scales.
-> 
-> **Recommendation**: For production, consider integrating **AWS S3** for permanent file storage if you need to keep these results indefinitely.
+### 1. Create an S3 Bucket
+1. Log in to the **AWS Console** and go to **S3**.
+2. Click **Create bucket**.
+3. **Bucket name**: e.g., `online-exam-storage-mihir` (must be unique globally).
+4. **Region**: Select `eu-north-1` (Stockholm) to match your backend.
+5. **Object Ownership**: Select **ACLs enabled** (Required for public-read access).
+6. **Block Public Access settings**: 
+   - **Uncheck** "Block all public access".
+   - Check the acknowledgment box that appears.
+7. Click **Create bucket**.
+
+### 2. Configure Public Access (Bucket Policy)
+1. Click on your new bucket name.
+2. Go to the **Permissions** tab.
+3. Scroll down to **Bucket policy** and click **Edit**.
+4. Paste the following policy (replace `YOUR_BUCKET_NAME` with your actual bucket name):
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+        }
+    ]
+}
+```
+5. Click **Save changes**.
+
+### 3. Add Environment Variables to Elastic Beanstalk
+Add these additional properties in your EB **Configuration > Software** settings:
+
+| Key | Value | Description |
+| :--- | :--- | :--- |
+| `AWS_REGION` | `eu-north-1` | The region of your bucket. |
+| `AWS_ACCESS_KEY_ID` | `...` | Your IAM user Access Key. |
+| `AWS_SECRET_ACCESS_KEY` | `...` | Your IAM user Secret Key. |
+| `S3_BUCKET_NAME` | `your-bucket-name` | The name you chose in Step 1. |
 
 ---
 
@@ -74,3 +111,5 @@ In the Amplify dashboard for your app, navigate to **Environment variables** and
 - [ ] Verify that the Backend health is "Green" in EB dashboard.
 - [ ] Verify that you can reach the Frontend URL provided by Amplify.
 - [ ] Log in with the Admin account (`admin@gmail.com`) to confirm database connectivity.
+- [ ] Upload an image in a question and verify it shows up in your S3 bucket.
+
