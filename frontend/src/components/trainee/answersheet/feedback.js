@@ -21,7 +21,6 @@ class Feedback extends Component {
     }
 
     handleStarChange=(star)=>{
-        console.log(star);
         this.setState({ star:star });
     } 
     onCommentChange=(comment)=>{
@@ -53,7 +52,6 @@ class Feedback extends Component {
                 }
                 
             }).catch((error)=>{
-                console.log(error);
                 Alert('error','Failed','Server Error');
                 this.setState({loading:false})
             })

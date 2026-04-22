@@ -8,19 +8,49 @@ var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 var passport = require("./services/passportconf");
 var tool = require("./services/tool");
-var app = express();
+var cookieParser = require('cookie-parser');
+const { doubleCsrf } = require("csrf-csrf");
 
-
+app.use(cookieParser());
 app.use(helmet());
+
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
+    const allowedOrigins = [process.env.FRONTEND_URL || 'http://localhost:3000'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.header("Access-Control-Allow-Origin", origin);
+    }
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-origin, Authorization");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-origin, Authorization, x-csrf-token");
+    res.header("Access-Control-Allow-Credentials", "true");
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
     next();
 });
+
+const {
+    invalidCsrfTokenErrorMiddleware,
+    generateToken,
+    doubleCsrfProtection,
+} = doubleCsrf({
+    getSecret: () => process.env.CSRF_SECRET || "a-very-secret-string",
+    cookieName: "x-csrf-token",
+    cookieOptions: {
+        httpOnly: false, // Must be accessible by client to send back in header
+        sameSite: "Lax",
+        secure: process.env.NODE_ENV === "production",
+    },
+    size: 64,
+    ignoredMethods: ["GET", "HEAD", "OPTIONS"],
+    getTokenFromRequest: (req) => req.headers["x-csrf-token"],
+});
+
+app.get("/api/v1/csrf-token", (req, res) => {
+    res.json({ token: generateToken(req, res) });
+});
+
+app.use(invalidCsrfTokenErrorMiddleware);
 
 //import other files
 var mongoose = require("./services/connection");
@@ -55,16 +85,16 @@ app.use(passport.initialize());
 
 
 //bind routes
-app.use("/api/v1/admin",passport.authenticate('user-token', { session : false }),admin);
-app.use("/api/v1/user",passport.authenticate('user-token', { session : false }),user);
-app.use('/api/v1/subject',passport.authenticate('user-token', { session : false }),universal);
-app.use('/api/v1/questions',passport.authenticate('user-token', { session : false }),question);
-app.use('/api/v1/test',passport.authenticate('user-token', { session : false }),testpaper);
-app.use('/api/v1/upload',passport.authenticate('user-token', { session : false }),up);
-app.use('/api/v1/trainer',passport.authenticate('user-token', { session : false }),stopRegistration);
-app.use('/api/v1/trainee',trainee);
-app.use('/api/v1/final',results);
-app.use('/api/v1/lala',dummy);
+app.use("/api/v1/admin", doubleCsrfProtection, passport.authenticate('user-token', { session : false }),admin);
+app.use("/api/v1/user", doubleCsrfProtection, passport.authenticate('user-token', { session : false }),user);
+app.use('/api/v1/subject', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),universal);
+app.use('/api/v1/questions', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),question);
+app.use('/api/v1/test', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),testpaper);
+app.use('/api/v1/upload', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),up);
+app.use('/api/v1/trainer', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),stopRegistration);
+app.use('/api/v1/trainee', doubleCsrfProtection, trainee);
+app.use('/api/v1/final', doubleCsrfProtection, results);
+app.use('/api/v1/lala', doubleCsrfProtection, dummy);
 
 
 
@@ -72,7 +102,7 @@ app.use('/api/v1/lala',dummy);
 
 
 
-app.use('/api/v1/login',login);
+app.use('/api/v1/login', doubleCsrfProtection, login);
 
 // Health check route for AWS Elastic Beanstalk
 app.get('/health', (req, res) => {

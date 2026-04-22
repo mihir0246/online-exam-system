@@ -52,7 +52,6 @@ class Answer extends React.Component{
             }
         })
         Promise.all([p1,p2,p3]).then(d=>{
-            console.log(d);
             this.setState({
                 loading:false
             });
@@ -64,7 +63,6 @@ class Answer extends React.Component{
                             ...v[i]
                         })
                 })
-                console.log(r)
                 this.setState({
                     data:r,
                     TotalScore:d[0].data.result.score
@@ -78,7 +76,6 @@ class Answer extends React.Component{
                 Alert('error','Error!',`${d[0].data.success ? "":d[0].data.message} and ${d[1].data.success ? "":d[1].data.message}`)
             }
         }).catch((err)=>{
-            console.log(err)
             this.setState({
                 loading:false
             });
@@ -238,7 +235,6 @@ class SingleQuestionDetails extends React.Component{
                 qid:this.props.qid
             }
         }).then((response)=>{
-            console.log(response)
             if(response.data.success){
                 this.setState({
                     qdetails:response.data.data[0]
@@ -254,7 +250,6 @@ class SingleQuestionDetails extends React.Component{
             this.setState({
                 fetching:false
             })
-            console.log(error)
             Alert('error','Error !',"Server Error");
         })
     }

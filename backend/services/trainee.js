@@ -47,17 +47,14 @@ let traineeenter = (req,res,next)=>{
                         })
                         tempdata.save().then((u)=>{
                                 sendmail(emailid,"Registered Successfully",`You have been successfully registered for the test. Click on the link given to take test  "${req.protocol + '://' + req.get('host')}/trainee/taketest?testid=${testid}&traineeid=${u._id}"`).then((dd)=>{
-                                    console.log(dd)
                                 }).catch((errr)=>{
-                                    console.log(errr);
                                 })
                             res.json({
                                 success : true,
-                                message : `Trainee registered successfully!`,
+                                message : `Candidate registered successfully!`,
                                 user : u
                             })
                         }).catch((err)=>{
-                            console.log(err);
                             res.status(500).json({
                                 success : false,
                                 message : "Server error!"
@@ -75,7 +72,6 @@ let traineeenter = (req,res,next)=>{
             }
             
         }).catch((err)=>{
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : `Server error!`
@@ -114,7 +110,6 @@ let correctAnswers = (req,res,next)=>{
 
         }
     }).catch((err) => {
-        console.log(err)
         res.status(500).json({
             success : false,
             message : "Unable to fetch details"
@@ -140,7 +135,6 @@ let feedback = (req,res,next)=>{
                 message : `Feedback recorded successfully!`
             })
         }).catch((err)=>{
-            console.log(err);
             res.status(500).json({
                 success : false,
                 message : "Error occured!"
@@ -166,7 +160,6 @@ let checkFeedback = (req,res,next)=>{
             })
         }
     }).catch((err)=>{
-        console.log(err);
         res.status(500).json({
             success : false,
             message : "Error occured!"
@@ -178,11 +171,8 @@ let resendmail = (req,res,next)=>{
     var userid = req.body.id;
     TraineeEnterModel.findById(userid,{emailid:1,testid : 1}).then((info)=>{
         if(info){
-            console.log(info)
             sendmail(info.emailid,"Registered Successfully",`You have been successfully registered for the test. Click on the link given to take test  "${req.protocol + '://' + req.get('host')}/trainee/taketest?testid=${info.testid}&traineeid=${info._id}"`).then((dd)=>{
-                console.log(dd)
             }).catch((errr)=>{
-                console.log(errr);
             })
             res.json({
                 success : true,
@@ -235,7 +225,6 @@ let Testquestions = (req,res,next)=>{
 
        }
    }).catch((err) => {
-       console.log(err)
        res.status(500).json({
            success : false,
            message : "Unable to fetch details"
@@ -291,7 +280,6 @@ let Answersheet = (req,res,next)=>{
                             })
                         })
                     }).catch((err) => {
-                        console.log(err);
                         res.status(500).json({
                             success : false,
                             message : "Unable to create Answersheet!"
@@ -307,7 +295,6 @@ let Answersheet = (req,res,next)=>{
             })
         }
     }).catch((err)=>{
-        console.log(err)
         res.status(500).json({
             success : false,
             message : "Unable to fetch details"
@@ -324,7 +311,6 @@ let flags = (req,res,next)=>{
     var present = new Date();
 
     Promise.all([p1,p2,p3]).then((info)=>{
-        console.log(info)
         if(info[1]===null){
             res.json({
                 success : false,
@@ -389,7 +375,6 @@ let flags = (req,res,next)=>{
         
         
     }).catch((error)=>{
-        console.log(error)
         res.status(500).json({
             success : false,
             message : "Unable to fetch details"
@@ -410,7 +395,7 @@ let TraineeDetails = (req,res,next)=>{
         }else{
             res.json({
                 success : false,
-                message : 'This trainee does not exists'
+                message : 'This candidate does not exists'
             })
         }
     }).catch((error)=>{
@@ -457,7 +442,6 @@ let UpdateAnswers = (req,res,next)=>{
             pending = info[0].duration*60 - ((present - info[1].startTime)/(1000))
             if(pending>0){
                 AnswersModel.findOneAndUpdate({questionid : questionid,userid:userid},{chosenOption : newAnswer}).then((info)=>{
-                    console.log(info)
                     if(info){
                         res.json({
                             success : true,
@@ -472,7 +456,6 @@ let UpdateAnswers = (req,res,next)=>{
                     }
                    
                 }).catch((error)=>{
-                    console.log(error)
                     res.status(500).json({
                         success : false,
                         message : "Error occured!"
@@ -554,7 +537,6 @@ let getQuestion = (req,res,next)=>{
                 })
             }   
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch data"

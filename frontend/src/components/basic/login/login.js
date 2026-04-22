@@ -19,9 +19,7 @@ class Login extends React.Component{
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
                 auth.LoginAuth(values.email,values.password).then((response)=>{
-                    console.log(response);
                     if(response.data.success){
                         this.props.login(response.data.user)
                         auth.storeToken(response.data.token);
@@ -33,7 +31,6 @@ class Login extends React.Component{
                         return Alert('error','Error!',response.data.message);
                     }
                 }).catch((error)=>{
-                    console.log(error);
                     return Alert('error','Error!','Server Error');
                 })              
             }

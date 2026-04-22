@@ -20,6 +20,7 @@ import {
     ChangeQuestionModalState
 } from '../../../actions/trainerAction';
 import { SecurePost } from '../../../services/axiosCall';
+import axios from 'axios';
 import apis from '../../../services/Apis';
 import Alert from '../../../components/common/alert';
 import auth from '../../../services/AuthServices';
@@ -186,12 +187,10 @@ class NewQuestion extends Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            console.log(values);
             if (!err) {
                 var f=1;
                 var ans=0;
                 var opts=[]
-                console.log('Received values of form: ', values);
                 this.state.questionDetails.options.forEach((element,i) => {
                     opts.push({
                         optbody:element.body,
@@ -224,7 +223,7 @@ class NewQuestion extends Component {
                                 weightage:values.waitage,
                             }
                         }).then((response)=>{
-                            console.log(response);
+
                             this.setState({
                                 adding:false
                             });
@@ -240,7 +239,7 @@ class NewQuestion extends Component {
                             }
 
                         }).catch((error)=>{
-                            console.log(error);
+
                             this.props.form.resetFields();
                             this.setState({
                                 adding:false,
@@ -302,13 +301,17 @@ class NewQuestion extends Component {
     }
 
     render() {
-        console.log(this.state)
+
         const { getFieldDecorator } = this.props.form;
         const { Option } = Select;
         const { TextArea } = Input;
         var QuestionImageprops={
             name: 'file',
-            action: `${apis.BASE}${apis.FILE_UPLOAD}?Token=${auth.retriveToken()}`,
+            action: `${apis.BASE}${apis.FILE_UPLOAD}`,
+            headers: { 
+                'x-csrf-token': axios.defaults.headers.common['x-csrf-token']
+            },
+            withCredentials: true,
             listType: 'picture',
         }
         

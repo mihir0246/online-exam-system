@@ -108,7 +108,6 @@ class Candidates extends Component {
                 id:this.props.conduct.id
             }
         }).then((response)=>{
-            console.log(response);
             if(response.data.success){
                 this.props.updateCandidatesTest(response.data.data);
             }
@@ -119,7 +118,6 @@ class Candidates extends Component {
                 loading:false
             })
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!','Server Error')
             this.setState({
                 loading:false

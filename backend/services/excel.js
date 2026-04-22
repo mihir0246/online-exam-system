@@ -8,17 +8,12 @@ var TestpaperModel = require("../models/testpaper");
 
 
 let result = (testid,MaxMarks)=>{
-  console.log('1')
   return new Promise((resolve,reject)=>{
-    console.log('2')
     var workbook = new Excel.Workbook();
     TestpaperModel.findOne({_id : testid,testconducted : true},{testconducted : 1,type:1,title:1}).then((test)=>{
-      console.log('3')
       if(!test){
-        console.log(test)
         reject(test)
       }else{
-        console.log('1')
         ResultModel.find({testid : testid},{score : 1,userid : 1,testid: 1})
         .populate('userid')
         .populate('testid')
@@ -30,7 +25,6 @@ let result = (testid,MaxMarks)=>{
               var worksheet = workbook.addWorksheet('Results',{pageSetup:{paperSize: 9, orientation:'landscape'}});
               
               
-              console.log(test.type);
               worksheet.columns = [
                 { header: 'Type', key: 'Type', width: 20 },
                 { header: 'Test-Title', key: 'Title', width: 20 },
@@ -42,11 +36,9 @@ let result = (testid,MaxMarks)=>{
                 { header: 'Max Marks', key: 'Outof', width : 20}
 
               ];
-              console.log(Mmarks);
               let M =Mmarks;
               
               results.map((d,i)=>{
-                console.log(d.userid.name);
                 worksheet.addRow({Name: d.userid.name, Email: d.userid.emailid, Contact : d.userid.contact,Organisation : d.userid.organisation,Type : d.testid.type,Title : d.testid.title,Score : d.score,Outof:M});
               })
               
@@ -57,14 +49,11 @@ let result = (testid,MaxMarks)=>{
                   
                   uploadToS3(buffer, fileName, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                   .then((url) => {
-                      console.log('Upload to S3 complete:', url);
                       resolve(url); // Now resolving with the public S3 URL
                   }).catch((err) => {
-                      console.log('S3 Upload Error:', err);
                       reject(err);
                   });
               }).catch((err) => {
-                  console.log('Excel Buffer Error:', err);
                   reject(err);
               });
 
@@ -74,7 +63,6 @@ let result = (testid,MaxMarks)=>{
             })
           
         }).catch((err) => {
-            console.log(err);
             reject(err)
         });
       }

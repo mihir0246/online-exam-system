@@ -21,7 +21,6 @@ class NewTopics extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
                 SecurePost({
                     url : `${apis.CREATE_SUBJECT}`,
                     data : {

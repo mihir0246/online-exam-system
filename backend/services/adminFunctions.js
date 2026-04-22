@@ -2,7 +2,6 @@ let UserModel = require("../models/user");
 let tool = require("./tool");
 
 let trainerRegister = (req,res,next)=>{
-    console.log(req.user.type);
     var _id = req.body._id || null;
     if(req.user.type==='ADMIN'){
         req.check('name', `Invalid name`).notEmpty();
@@ -13,9 +12,6 @@ let trainerRegister = (req,res,next)=>{
         req.check('contact','Invalid contact number').isLength({min : 13,max :13}).isNumeric({no_symbols: false});
         var errors = req.validationErrors()
         if(errors){
-            console.log("TRAINER REGISTRATION VALIDATION FAILED:");
-            console.log("Body:", req.body);
-            console.log("Errors:", errors);
             res.json({
                 success : false,
                 message : 'Invalid inputs: ' + errors.map(e => e.msg).join(', '),
@@ -64,14 +60,12 @@ let trainerRegister = (req,res,next)=>{
                                     message : `Trainer's Profile created successfully!`
                                 })
                             }).catch((err)=>{
-                                console.log(err);
                                 res.status(500).json({
                                     success : false,
                                     message : "Unable to create Trainer's Profile"
                                 })
                             })
                         }).catch((err)=>{
-                            console.log(err);
                             res.status(500).json({
                                 success : false,
                                 message : "Unable to create Trainer's Profile"
@@ -167,7 +161,6 @@ let getAllTrainers = (req,res,next)=>{
 let getSingleTrainer = (req,res,next)=>{
     if(req.user.type==='ADMIN'){
         let _id = req.params._id;
-        console.log(_id);
         UserModel.find({_id : _id,status : 1},{password: 0, type: 0, createdBy : 0,status : 0}).then((info)=>{
             if(info.length === 0){
                 res.json({

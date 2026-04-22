@@ -17,7 +17,7 @@ export const logout = ()=> dispatch =>{
 
 
 export const wakeUp = ()=> dispatch =>{
-    var t = auth.retriveToken() || null;
+    var t = auth.retrieveToken() || null;
     if(t && t!=='undefined'){
         auth.wakeUp(t).then((res)=>{
             console.log(`Wakeup success ${res}`)

@@ -10,9 +10,6 @@ let createQuestion = (req,res,next)=>{
         req.check('subject', 'Enter subject!').notEmpty();
         var errors = req.validationErrors()
         if(errors){
-            console.log("QUESTION CREATION VALIDATION FAILED:");
-            console.log("Body:", req.body);
-            console.log("Errors:", errors);
             res.json({
                 success : false,
                 message : 'Invalid inputs',
@@ -32,14 +29,12 @@ let createQuestion = (req,res,next)=>{
                     anscount=anscount+1;
                 }
             })
-            console.log(anscount);
             var explanation = req.body.explanation;
                 QuestionModel.findOne({ body : body,status:1 },{status:0})
                 .then((info)=>{
                     if(!info){
                         options.insertMany(option).then((op) => {
                             var ra=[];
-                            console.log(op)
                             op.map((d,i)=>{
                                 if(d.isAnswer){
                                     ra.push(d._id)
@@ -63,14 +58,12 @@ let createQuestion = (req,res,next)=>{
                                     message : `New question created successfully!`
                                 })
                             }).catch((err)=>{
-                                console.log(err);
                                 res.status(500).json({
                                     success : false,
                                     message : "Unable to create new question!"
                                 })
                             })
                         }).catch((err) => {
-                            console.log(err);
                             res.status(500).json({
                                 success : false,
                                 message : "Unable to create new question!"
@@ -144,7 +137,6 @@ let getAllQuestions = (req,res,next)=>{
                     data : question
                 })
             }).catch((err) => {
-                console.log(err)
                 res.status(500).json({
                     success : false,
                     message : "Unable to fetch data"
@@ -164,7 +156,6 @@ let getAllQuestions = (req,res,next)=>{
                     data : question
                 })
             }).catch((err) => {
-                console.log(err)
                 res.status(500).json({
                     success : false,
                     message : "Unable to fetch data"
@@ -187,7 +178,6 @@ let getAllQuestions = (req,res,next)=>{
 let getSingleQuestion = (req,res,next)=>{
     if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         let _id = req.params._id;
-        console.log(_id);
         QuestionModel.find({_id : _id , status : 1},{status : 0})
         .populate('questions', 'body')
         .populate('subject', 'topic')
@@ -207,7 +197,6 @@ let getSingleQuestion = (req,res,next)=>{
                 })
             }   
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch data"

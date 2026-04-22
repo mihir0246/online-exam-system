@@ -17,7 +17,7 @@ const s3Client = new S3Client({
  * @param {string} contentType - The MIME type of the file
  * @returns {Promise<string>} - The public URL of the uploaded file
  */
-const uploadToS3 = async (body, key, contentType) => {
+const uploadToS3 = async (body, key, contentType, acl = 'public-read') => {
     const bucketName = process.env.S3_BUCKET_NAME;
     
     if (!bucketName) {
@@ -29,14 +29,16 @@ const uploadToS3 = async (body, key, contentType) => {
         Key: key,
         Body: body,
         ContentType: contentType,
-        ACL: 'public-read' // Ensure the file is publicly readable
+        ACL: acl
     });
 
     await s3Client.send(command);
 
-    // Construct the public URL
-    // Note: This assumes standard S3 URL format
-    return `https://${bucketName}.s3.${process.env.AWS_REGION || 'eu-north-1'}.amazonaws.com/${key}`;
+    // Return both the key and the location
+    return {
+        key: key,
+        location: `https://${bucketName}.s3.${process.env.AWS_REGION || 'eu-north-1'}.amazonaws.com/${key}`
+    };
 };
 
 module.exports = { s3Client, uploadToS3 };

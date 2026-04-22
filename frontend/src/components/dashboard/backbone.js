@@ -34,26 +34,23 @@ class Dashboard extends React.Component{
         });
     };
 
-    logOut =()=>{
-        auth.deleteToken();
+    logOut = async ()=>{
+        await auth.deleteToken();
         window.location.href='/';
     }
 
     componentWillMount(){
-        console.log(this.state.LocalIsLoggedIn);
-        var t = auth.retriveToken();
+        var t = auth.retrieveToken();
         if(this.state.LocalIsLoggedIn){
             
         }
         else if(t && t!=='undefined'){
             auth.FetchAuth(t).then((response)=>{
-                console.log(response.data);
                 this.props.login(response.data.user);
                 this.setState({
                     LocalIsLoggedIn : true
                 })
                 var subUrl = this.props.match.params.options;
-                console.log(subUrl);
                 var obj = this.props.user.userOptions.find((o,i)=>{
                     if(o.link ===`/user/${subUrl}`){
                         return o
@@ -66,9 +63,9 @@ class Dashboard extends React.Component{
                 else{
                     this.props.changeActiveRoute(String(tt));
                 }
-            }).catch((error)=>{
+            }).catch(async (error)=>{
                 Alert('warning','Warning!','Server Error.');
-                auth.deleteToken();
+                await auth.deleteToken();
                 window.location.href='/';
                 
             })
@@ -103,7 +100,6 @@ class Dashboard extends React.Component{
         }
         else if(this.props.match.params.options==='conducttest'){
             let params = queryString.parse(this.props.location.search)
-            console.log(params)
             torender=<ConductTest {...params}/>
         }
         else{

@@ -22,7 +22,6 @@ class MainPortal extends Component {
     }
 
     componentDidMount(){
-        console.log(this.props.trainee.traineeid)
         this.props.fetchTraineedata(this.state.testDetails.traineeid)
         this.props.fetchTestdata(this.state.testDetails.testid,this.state.testDetails.traineeid)
     }

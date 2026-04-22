@@ -2,7 +2,6 @@ import React from 'react';
 import { Card,Rate, Comment, Avatar  } from 'antd';
 
 export default function FeedBacks(props) {
-    console.log(props.feedbacks);
     return (
         <div>
             <Card >

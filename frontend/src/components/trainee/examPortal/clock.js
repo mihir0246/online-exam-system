@@ -41,7 +41,6 @@ class Clock extends Component {
 
     clockF = ()=>{
         let c = setInterval(()=>{
-            console.log('i am done')
             let l = this.state.localMinutes;
             let s = this.state.localSeconds;
             if(l==0 && s==1){

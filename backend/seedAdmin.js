@@ -6,23 +6,40 @@ const UserModel = require('./models/user');
 const seedAdmin = async () => {
     try {
         await mongoose.connect(config.get('mongodb.connectionString'));
-        console.log('Connected to MongoDB for seeding...');
 
-        // Clear existing users to avoid duplicate key errors
-        await UserModel.deleteMany({});
-        console.log('Cleared existing users.');
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@gmail.com';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
 
-        const hashedPassword = await bcrypt.hash('admin', 10);
-        const adminUser = new UserModel({
-            name: 'Admin',
-            emailid: 'admin@gmail.com',
-            password: hashedPassword,
-            contact: '0000000000',
-            type: 'ADMIN',
-            status: true
-        });
+        if (adminPassword === 'admin') {
+            console.warn('WARNING: Using default admin password. Set ADMIN_PASSWORD env variable for production.');
+        }
 
-        await adminUser.save();
+        const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+        const resetPassword = process.env.RESET_ADMIN_PASSWORD === 'true';
+
+        const updateData = {
+            $setOnInsert: {
+                name: 'Admin',
+                emailid: adminEmail,
+                password: hashedPassword,
+                contact: '0000000000',
+                type: 'ADMIN',
+                status: true
+            }
+        };
+
+        if (resetPassword) {
+            updateData.$set = { password: hashedPassword };
+            console.log('RESET_ADMIN_PASSWORD is set to true. Admin password will be reset.');
+        }
+
+        await UserModel.findOneAndUpdate(
+            { emailid: adminEmail },
+            updateData,
+            { upsert: true, new: true }
+        );
+
         console.log('Admin user seeded successfully!');
         process.exit(0);
     } catch (err) {

@@ -37,7 +37,6 @@ class TestDetails extends React.Component {
                 Alert('error','Error!',response.data.message)
             }
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!','Server Error')
         })
     }
@@ -49,7 +48,6 @@ class TestDetails extends React.Component {
                 id:this.props.conduct.id
             }
         }).then((response)=>{
-            console.log(response);
             if(response.data.success){
                 this.props.changeTestStatus(response.data.data);
                 Alert('success','Success!','Test has begin');
@@ -58,7 +56,6 @@ class TestDetails extends React.Component {
                 Alert('error','Error!',response.data.message)
             }
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!','Server Error')
         })
     }
@@ -70,7 +67,6 @@ class TestDetails extends React.Component {
                 id:this.props.conduct.id
             }
         }).then((response)=>{
-            console.log(response);
             if(response.data.success){
                 this.props.changeTestStatus(response.data.data);
                 Alert('success','Success!','Test has ended');
@@ -79,7 +75,6 @@ class TestDetails extends React.Component {
                 Alert('error','Error!',response.data.message)
             }
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!','Server Error')
         }) 
     }
@@ -92,14 +87,11 @@ class TestDetails extends React.Component {
                 id: this.props.conduct.id
             }
         }).then((response)=>{
-            console.log(response);
         }).catch((error)=>{
-            console.log(error)
         })
     }
     
     render(){
-        console.log(this.props.conduct.basictestdetails.testbegins);
         return (
             <div>
                 <Descriptions size="small" column={4} title="Basic Test Info" layout="vertical" bordered={true}>

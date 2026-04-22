@@ -14,12 +14,9 @@ var createadmin = ()=>{
             type: 'ADMIN',
         })
         tempdata.save().then(()=>{
-            console.log("user created")
         }).catch((err)=>{
-            console.log("err1",err);
         })
     }).catch((err)=>{
-        console.log("err2",err)
     })
 }
 

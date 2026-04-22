@@ -1,8 +1,0 @@
-{
-    "mongodb": {
-        "connectionString": "mongodb+srv://mihirsonawane:mihir@cluster0.sfexjam.mongodb.net/online-exam?appName=Cluster0"
-    },
-    "jwt": {
-        "secret": "Examination Portal Application"
-    }
-}

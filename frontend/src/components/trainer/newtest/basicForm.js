@@ -20,7 +20,6 @@ class BasicTestFormO extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values)
                 this.props.changeBasicNewTestDetails({
                     testType:values.type,
                     testTitle: values.title,
@@ -44,7 +43,6 @@ class BasicTestFormO extends Component {
                     testname:value
                 }
             }).then((data)=>{
-                console.log(data);
                 if(data.data.success){
                     if(data.data.can_use){
                         this.setState({
@@ -66,7 +64,6 @@ class BasicTestFormO extends Component {
                     callback()
                 }
             }).catch((ee)=>{
-                console.log(ee);
                 this.setState({
                     checkingName:"success"
                 })

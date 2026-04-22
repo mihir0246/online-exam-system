@@ -9,12 +9,10 @@ import { Redirect } from 'react-router-dom';
 
 
 function Homepage(props) {
-  if(auth.retriveToken() && auth.retriveToken()!=='undefined'){
-    console.log('Logged In');
+  if(auth.retrieveToken() && auth.retrieveToken()!=='undefined'){
     return <Redirect to='/user/home' />
   }
   else{
-    console.log('Not Logged In');
     return (
       <div>
           <div className="parallax">

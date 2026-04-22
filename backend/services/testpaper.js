@@ -17,9 +17,6 @@ let createEditTest = (req,res,next)=>{
 
     var errors = req.validationErrors()
     if(errors){
-        console.log("TEST CREATION VALIDATION FAILED:");
-        console.log("Body:", req.body);
-        console.log("Errors:", errors);
         res.json({
             success : false,
             message : 'Invalid inputs',
@@ -78,7 +75,6 @@ let createEditTest = (req,res,next)=>{
                             testid : d._id
                         })
                     }).catch((err)=>{
-                        console.log(err);
                         res.status(500).json({
                             success : false,
                             message : "Unable to create new testpaper!"
@@ -108,7 +104,6 @@ let createEditTest = (req,res,next)=>{
 
 let getSingletest = (req,res,next)=>{
     let id = req.params._id;
-    console.log(id);
     TestPaperModel.find({_id: id,status : 1},{createdAt: 0, updatedAt : 0,status : 0})
     .populate('createdBy', 'name')
     .populate('questions' , 'body')
@@ -129,7 +124,6 @@ let getSingletest = (req,res,next)=>{
             data : testpaper
         })   
     }).catch((err) => {
-        console.log(err)
         res.status(500).json({
             success : false,
             message : "Unable to fetch data"
@@ -140,7 +134,11 @@ let getSingletest = (req,res,next)=>{
 let getAlltests = (req,res,next)=>{
     if(req.user.type==='TRAINER' || req.user.type==='ADMIN'){
         var title = req.body.title;
-            TestPaperModel.find({createdBy : req.user._id,status : 1},{status : 0})
+        let query = { status: 1 };
+        if (req.user.type !== 'ADMIN') {
+            query.createdBy = req.user._id;
+        }
+        TestPaperModel.find(query, { status: 0 })
             .populate('questions' , 'body')
             .populate({
                 path: 'subjects',
@@ -161,7 +159,6 @@ let getAlltests = (req,res,next)=>{
                     data : testpaper
                 })
             }).catch((err) => {
-                console.log(err)
                 res.status(500).json({
                     success : false,
                     message : "Unable to fetch data"
@@ -225,7 +222,6 @@ let TestDetails = (req,res,next)=>{
 
             }
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch details"
@@ -262,7 +258,6 @@ let basicTestdetails = (req,res,next)=>{
 
             }
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch details"
@@ -311,7 +306,6 @@ let basicTestdetails = (req,res,next)=>{
 
             }
         }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch details"
@@ -346,7 +340,6 @@ let basicTestdetails = (req,res,next)=>{
                 })
             }
        }).catch((err) => {
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Unable to fetch details"
@@ -433,7 +426,6 @@ let basicTestdetails = (req,res,next)=>{
           })
         .then((info)=>{
             if(info){
-                console.log(info);
                 result(id,MaxMarks).then((sheet)=>{
                     res.json({
                         success : true,
@@ -446,7 +438,6 @@ let basicTestdetails = (req,res,next)=>{
                         }
                     })
                 }).catch((error)=>{
-                    console.log(error)
                     res.status(500).json({
                         success : false,
                         message : "Server Error"
@@ -461,7 +452,6 @@ let basicTestdetails = (req,res,next)=>{
             }  
            
         }).catch((err)=>{
-            console.log(err)
             res.status(500).json({
                 success : false,
                 message : "Server Error"
@@ -492,11 +482,9 @@ let basicTestdetails = (req,res,next)=>{
                 Ma.questions.map((d,i)=>{
                     m+=d.weightage;
                 })
-                console.log(m)
                 resolve(m)
             }
         }).catch((err) => {
-            console.log(err)
             reject(err)
         });
 
@@ -543,7 +531,6 @@ let checkTestName =(req,res,next)=>{
                 })
             }
         }).catch((error)=>{
-            console.log(error);
             res.status(500).json({
                 success:false,
                 message:"Server error"

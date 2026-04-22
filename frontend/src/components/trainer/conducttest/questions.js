@@ -30,7 +30,6 @@ export default class Questions extends Component {
                 id:this.props.id
             }
         }).then((response)=>{
-            console.log(response);
             if(response.data.success){
                 this.props.updateQuestiosnTest(response.data.data);
             }
@@ -41,7 +40,6 @@ export default class Questions extends Component {
                 loading:false
             })
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!','Server Error')
             this.setState({
                 loading:false

@@ -4,7 +4,7 @@
   "description": "backend logic of the project using Mongo DB, Node js",
   "main": "app.js",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,18 +22,22 @@
   "homepage": "https://github.com/sitrain-online/backend#readme",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1030.0",
+    "@aws-sdk/s3-request-presigner": "^3.1034.0",
     "app-root-path": "^2.2.1",
     "bcryptjs": "2.4.3",
     "body-parser": "^1.19.0",
     "config": "^3.1.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "csrf-csrf": "^4.0.3",
     "exceljs": "^1.13.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
     "express-validator": "^5.3.1",
+    "file-type": "^16.5.4",
     "helmet": "^3.18.0",
     "http-errors": "^1.7.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.11.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",

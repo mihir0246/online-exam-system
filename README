@@ -44,6 +44,11 @@ This application was modernized and heavily refactored to be production-ready an
 - **How it's connected**: It points directly to the original GitHub repository. Upon a push, it builds the React code into production assets (`npm run build`).
 - **Why we used it**: Amplify natively offers global CDN distribution, HTTPS SSL Certificates, and unhandled-route redirecting (vital for React Router). We exposed an Environment Variable named `REACT_APP_API_BASE_URL` inside Amplify config to safely point the browser requests straight to the active Elastic Beanstalk URL.
 
+### 7. AWS S3 (Simple Storage Service)
+- **What it is**: A highly scalable object storage service used for persistent file storage.
+- **How it's connected**: The Node.js backend uses `multer-s3` and `@aws-sdk/client-s3` to directly stream uploaded assets (like question images) and generated exports (like Excel reports) into an S3 bucket configured for public read access.
+- **Why we used it**: Because Elastic Beanstalk instances are ephemeral (they can spin up or down for scaling), uploading files directly to the EC2 local disk results in data loss. S3 guarantees persistent storage decoupled from the active server loop.
+
 ---
 
 ## Recent Modernizations & Fixes
@@ -53,3 +58,5 @@ To achieve full production stabilization, the following massive improvements wer
 1. **CORS & SPA Fallbacks**: Repaired `Apis.js`. In production, the API routes were falling back to `""` triggering React to query its own static HTML files. Injecting process environment logic (`REACT_APP_API_BASE_URL`) established the seamless connection between the frontend Amplify app and the backend Beanstalk system!
 2. **Global Crash Handling**: Fixed critical NodeJS crash states (`RangeError [ERR_HTTP_INVALID_STATUS_CODE]: Invalid status code: undefined`). The global backend Error Handler now intelligently intercepts severed Database connectivity without immediately destroying the active web server. 
 3. **Password Expansion**: Resolved frustrating UX bottlenecks during Trainer additions. The restrictive `{max: 6}` character limit via express-validator in both the global Register and Login controllers was expanded to `{max: 100}`, with clear context-aware validation popups mapping directly back to the active user's form view.
+4. **AWS S3 Image & Report Storage Integration**: Shifted local disk uploads to external AWS S3 buckets to ensure continuous availability of uploaded test images and exported Excel documents regardless of Beanstalk scaling events.
+5. **Database Role Synchronization**: Fixed critical role-mismatch errors across the database ecosystem (via scripts like `fix_roles.py`). UI layouts and admin privileges now systematically toggle in the React frontend based on true strict string-matching for "ADMIN", "TRAINER", and "TRAINEE" user tiers.

@@ -19,7 +19,6 @@ let stopRegistration = (req,res,next)=>{
                         })       
                     })
                     .catch((err)=>{
-                        console.log(err)
                         res.status(500).json({
                             success : false,
                             message : "Unable to change registration status"
@@ -41,7 +40,6 @@ let stopRegistration = (req,res,next)=>{
             }
 
         }).catch((e)=>{
-            console.log(e);
             res.status(500).json({
                 success : false,
                 message : "Unable to change registration status"
@@ -91,7 +89,6 @@ let getFeedBack =(req,res,next)=>{
             })
         })
         .catch((err)=>{
-            console.log(err);
             res.status(500).json({
                 success:false,
                 message:"Server Error"

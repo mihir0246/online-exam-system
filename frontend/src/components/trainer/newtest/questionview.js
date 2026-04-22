@@ -25,7 +25,6 @@ class FinalQuestionView extends React.Component {
                 organisation : this.props.test.newtestFormData.OrganisationName
             }
         }).then((response)=>{
-            console.log(response.data);
             if(response.data.success){
                 Alert('success','Test paper Created Successfully!','Please wait, you will automatically be redirected to conduct test page.');
                 setTimeout(()=>{
@@ -38,7 +37,6 @@ class FinalQuestionView extends React.Component {
                 Alert('error','Error!',response.data.message);
             }
         }).catch((err)=>{
-            console.log(err);
             Alert('error','Error!','Server Error');
         })
     }
@@ -79,7 +77,6 @@ function QuestionView(props) {
     var obj = props.test.questionsAvailablebasedonSubject.filter((hero)=>{
         return hero._id==_id;
     })
-    console.log(obj[0].weightage);
     var oo = ['A','B','C','D','E'];
     return (
         <div style={{marginBottom:'20px'}}>

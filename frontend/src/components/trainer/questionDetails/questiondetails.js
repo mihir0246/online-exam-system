@@ -16,7 +16,6 @@ export default class QuestionDetails extends Component {
     }
 
     tabChange = (key)=>{
-        console.log(key)
     }
 
     componentDidMount(){
@@ -24,13 +23,11 @@ export default class QuestionDetails extends Component {
         SecureGet({
             url: `${apis.FETCH_SINGLE_QUESTION}/${ID}`,
         }).then((response)=>{
-            console.log(response.data.data[0]);
             this.setState({
                 details : response.data.data[0],
                 loading:false
             })
         }).catch((error)=>{
-            console.log(error);
         })
     }
 
@@ -78,7 +75,6 @@ function Tab1(props) {
 function Tab2(props){
     const optn =['A','B','C','D','E']
     const Optiondata = props.details;
-    console.log(`details : ${Optiondata}`);
     return(
         <div className="mainQuestionDetailsContaine">
             <div className="questionDetailsBody">

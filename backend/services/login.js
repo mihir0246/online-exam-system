@@ -26,6 +26,14 @@ let userlogin = (req,res,next)=>{
             }
             else{
                 var token = jwt.sign({_id:user._id},process.env.JWT_SECRET || config.get('jwt.secret'),{expiresIn: 5000000});
+                // Set the token as an HttpOnly cookie
+                res.cookie('Token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'Lax',
+                    maxAge: 5000000 * 1000 // 5,000,000 seconds in milliseconds
+                });
+
                 res.json({
                     success: true,
                     message: "login successful",
@@ -47,5 +55,13 @@ let userlogin = (req,res,next)=>{
 
 
      
-module.exports = { userlogin };
+let userlogout = (req, res) => {
+    res.clearCookie('Token');
+    res.json({
+        success: true,
+        message: "logout successful"
+    });
+};
+
+module.exports = { userlogin, userlogout };
 

@@ -1,7 +1,7 @@
 const axios = require('axios');
-import LocalAuth from './AuthServices';
 const base = require("./conf").base;
 
+axios.defaults.withCredentials = true;
 
 let get = (uri,params=null)=>{
     return axios({
@@ -9,7 +9,6 @@ let get = (uri,params=null)=>{
         url : uri,
         baseURL : base,
         params : {
-            Token : LocalAuth.retriveToken(),
             ...params
         }
     });
@@ -21,7 +20,6 @@ let post = (uri,params=null,data=null,others={})=>{
         url : uri,
         baseURL : base,
         params : {
-            Token : LocalAuth.retriveToken(),
             ...params
         },
         data : data,

@@ -65,7 +65,6 @@ class SingleQuestion extends React.Component{
             }
         }).then((response)=>{
             if(response.data.success){
-                console.log(response.data)
                 var t = [...this.props.trainee.answers];
                 t[this.props.trainee.activeQuestionIndex]={
                     ...t[this.props.trainee.activeQuestionIndex],
@@ -168,7 +167,6 @@ class SingleQuestion extends React.Component{
     }
 
     render(){
-        console.log(this.state)
         let opts=['A','B','C','D','E']
         return (
             <div>

@@ -49,7 +49,6 @@ let createEditsubject = (req,res,next)=>{
                             message : `New subject created successfully!`
                         })
                     }).catch((err)=>{
-                        console.log(err);
                         res.status(500).json({
                             success : false,
                             message : "Unable to create new subject!"
@@ -94,7 +93,6 @@ let getAllSubjects = (req,res,next)=>{
             data : subject
         })   
     }).catch((err) => {
-        console.log(err)
         res.status(500).json({
             success : false,
             message : "Unable to fetch data"
@@ -105,7 +103,6 @@ let getAllSubjects = (req,res,next)=>{
 
 let getSingleSubject = (req,res,next)=>{
     let id = req.params._id;
-    console.log(id);
     SubjectModel.find({_id: id},{createdAt: 0, updatedAt : 0,status : 0})
     .populate('createdBy', 'name')
     .exec().then((subject) => {
@@ -115,7 +112,6 @@ let getSingleSubject = (req,res,next)=>{
             data : subject
         })   
     }).catch((err) => {
-        console.log(err)
         res.status(500).json({
             success : false,
             message : "Unable to fetch data"

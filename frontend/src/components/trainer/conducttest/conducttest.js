@@ -63,7 +63,6 @@ class ConductTestS extends Component {
 
 class C extends Component {
     render() {
-        console.log(this.props.conduct.basictestdetails.testconducted);
         if(this.props.conduct.basictestdetails.testconducted){
             return(
                 <div className="reasendmail-container-register">
@@ -76,7 +75,7 @@ class C extends Component {
                 <div>
                     <TestDetails/>
                     <Tabs defaultActiveKey="1" style={{marginTop:'20px'}}>
-                        <TabPane tab={<span><Icon type="user" />Registered Trainee</span>} key="1">
+                        <TabPane tab={<span><Icon type="user" />Registered Candidates</span>} key="1">
                             <Candidates />
                         </TabPane>
                         <TabPane tab={<span><Icon type="question-circle" />Questions</span>} key="2">

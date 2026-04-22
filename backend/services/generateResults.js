@@ -12,14 +12,12 @@ let generateResults = (req,res,next)=>{
     var testid = req.body.testid;
     
     gresult(userid,testid).then((result)=>{
-        console.log(result)
         res.json({
             success:true,
             message:"Result generated successfully",
             result:result
         })
     }).catch((error)=>{
-        console.log(error)
         res.status(500).json({
             success:false,
             message:"Unable to generate result",
@@ -122,14 +120,12 @@ let gresult = (uid,tid)=>{
                         });
                     }
                 }).catch((err) => {
-                    console.log(err);
                     reject(err)
                 });
             }else{
                 resolve(results)
             }
         }).catch((err) => {
-            console.log(err);
             reject(err)
         });   
     })

@@ -51,10 +51,21 @@ passport.use('login',new LocalStrategy({
 
 
 
+// Combined extractor to support both Authorization header and HttpOnly cookie
+const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies['Token'];
+    }
+    return token;
+};
+
 //options jwt
 var opts = {}
-//opts.jwtFromRequest = ExtractJwt.fromHeader('authorization');
-opts.jwtFromRequest = ExtractJwt.fromUrlQueryParameter('Token');
+opts.jwtFromRequest = ExtractJwt.fromExtractors([
+    ExtractJwt.fromAuthHeaderAsBearerToken(),
+    cookieExtractor
+]);
 opts.secretOrKey = process.env.JWT_SECRET || config.get('jwt.secret');
 
 passport.use('user-token',new JwtStrategy(opts, function(jwt_payload, done) {

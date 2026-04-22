@@ -5,11 +5,11 @@ import { Get, Post} from './axiosCall';
 class AuthService{
     constructor(){
         this.token=null;
-        console.log(apis.BASE);
-        console.log(apis.BASE_LOCAL_URL);
     }
     
-    retriveToken = ()=>{
+    retrieveToken = ()=>{
+        // We still check localStorage for backward compatibility with UI components
+        // but authentication now primarily uses HttpOnly cookies.
         return localStorage.getItem('Token')
     }
 
@@ -17,8 +17,14 @@ class AuthService{
         localStorage.setItem('Token', t);
     }
 
-    deleteToken = ()=>{
+    deleteToken = async ()=>{
         localStorage.removeItem('Token');
+        // Clear the HttpOnly cookie via backend logout endpoint
+        try {
+            await Post({ url: apis.LOGOUT });
+        } catch (error) {
+            console.error('Logout request failed:', error);
+        }
     }
 
     LoginAuth = (u,p)=>{
@@ -31,12 +37,10 @@ class AuthService{
         })    
     }
 
-    FetchAuth = (t)=>{
+    FetchAuth = ()=>{
         return Get({
-            url : apis.GETDETAILSUSER,
-            params : {
-                Token : t
-            }
+            url : apis.GETDETAILSUSER
+            // No manual Authorization header; withCredentials is true in axiosCall.js
         })
     }
 

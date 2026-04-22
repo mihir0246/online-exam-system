@@ -32,7 +32,6 @@ class TestDetails extends Component {
     }
 
     tabChange = (key)=>{
-        console.log(key)
     }
     componentDidMount(){
         var link = window.location.href.split('/').splice(0,3);
@@ -73,7 +72,6 @@ class TestDetails extends Component {
             }
         })
         Promise.all([p1,p2,p3,p4,p5]).then((response)=>{
-            console.log(response)
             if(response[0].data.success && response[1].data.success && response[2].data.success && response[3].data.success&& response[4].data.success){
                 this.setState({
                     testdetails:response[0].data.data,
@@ -88,7 +86,6 @@ class TestDetails extends Component {
                 Alert('error','Error !',response[0].data.message +response[1].data.message+response[2].data.message)
             }
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error !','Server Error.')
         })
     }
@@ -133,7 +130,7 @@ class TestDetails extends Component {
                             </TabPane>
                         :null}
                         {testdetails.testconducted?
-                            <TabPane tab={ <span><Icon type="user" />Trainees</span> } key="3">
+                            <TabPane tab={ <span><Icon type="user" />Candidates</span> } key="3">
                                 <Trainee maxmMarks={this.state.maxMarks} id={this.state.id} stats={this.state.stats}/>
                             </TabPane>
                         :null}

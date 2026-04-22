@@ -27,7 +27,6 @@ class GeneraterandomQuestionO extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
                 if(values.no<=this.props.test.questionsAvailablebasedonSubject.length){
                     var qus=[];
                     var allquestions=[...this.props.test.questionsAvailablebasedonSubject];
@@ -171,7 +170,6 @@ class SingleQuestionDetails extends React.Component{
                 qid:this.props.qid
             }
         }).then((response)=>{
-            console.log(response)
             if(response.data.success){
                 this.setState({
                     qdetails:response.data.data[0]
@@ -187,7 +185,6 @@ class SingleQuestionDetails extends React.Component{
             this.setState({
                 fetching:false
             })
-            console.log(error)
             Alert('error','Error !',"Server Error");
         })
     }

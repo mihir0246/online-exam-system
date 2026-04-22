@@ -19,7 +19,6 @@ class TraineeRegisterForm extends Component {
 
     componentDidMount(){
         let params = queryString.parse(this.props.location.search)
-        console.log(params)
         this.setState({
             testid:params.testid
         });
@@ -29,8 +28,6 @@ class TraineeRegisterForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
-                console.log(this.state.testid);
                 Post({
                     url:apis.REGISTER_TRAINEE_FOR_TEST,
                     data:{
@@ -42,7 +39,6 @@ class TraineeRegisterForm extends Component {
                         location:values.location
                     }
                 }).then((data)=>{
-                    console.log(data.data);
                     if(data.data.success){
                         this.setState({
                             inform:false,
@@ -54,7 +50,6 @@ class TraineeRegisterForm extends Component {
                         Alert('error','Error!',data.data.message);
                     }
                 }).catch((error)=>{
-                    console.log(error);
                     this.props.form.resetFields();
                     Alert('error','Error!',"Server Error");
                 })
@@ -76,7 +71,6 @@ class TraineeRegisterForm extends Component {
                 Alert('error','Error!',response.data.message);
             }
         }).catch((error)=>{
-            console.log(error);
             Alert('error','Error!',"Server Error");
         })
     }
@@ -187,5 +181,5 @@ class TraineeRegisterForm extends Component {
     }
 }
 
-const TraineeRegister = Form.create({ name: 'Trainee Registration' })(TraineeRegisterForm);
+const TraineeRegister = Form.create({ name: 'Candidate Registration' })(TraineeRegisterForm);
 export default TraineeRegister;
