@@ -1,20 +1,22 @@
-const PORT = process.env.PORT || 5000
-var createError = require('http-errors');
-var express = require('express');
-const helmet = require('helmet')
-var path = require('path');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+const PORT = process.env.PORT || 5000;
+const createError = require('http-errors');
+const express = require('express');
+const helmet = require('helmet');
+const path = require('path');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
-var passport = require("./services/passportconf");
-var tool = require("./services/tool");
-var cookieParser = require('cookie-parser');
+const passport = require("./services/passportconf");
+const tool = require("./services/tool");
+const cookieParser = require('cookie-parser');
 const { doubleCsrf } = require("csrf-csrf");
+
+const app = express();
 
 app.use(cookieParser());
 app.use(helmet());
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     const allowedOrigins = [process.env.FRONTEND_URL || 'http://localhost:3000'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
@@ -52,56 +54,41 @@ app.get("/api/v1/csrf-token", (req, res) => {
 
 app.use(invalidCsrfTokenErrorMiddleware);
 
-//import other files
-var mongoose = require("./services/connection");
-var admin = require("./routes/admin");
-var login = require("./routes/login");
-var user = require("./routes/user");
-var universal = require("./routes/universal");
-var question = require("./routes/questions");
-var testpaper = require("./routes/testpaper");
-var up = require("./routes/fileUpload");
-var trainee = require("./routes/trainee");
-var stopRegistration = require("./routes/stopRegistration");
-var results = require("./routes/results");
-var dummy = require("./routes/dummy");
+// Routes
+const mongoose = require("./services/connection");
+const admin = require("./routes/admin");
+const login = require("./routes/login");
+const user = require("./routes/user");
+const universal = require("./routes/universal");
+const question = require("./routes/questions");
+const testpaper = require("./routes/testpaper");
+const up = require("./routes/fileUpload");
+const trainee = require("./routes/trainee");
+const stopRegistration = require("./routes/stopRegistration");
+const results = require("./routes/results");
+const dummy = require("./routes/dummy");
 
-
-
-
-
-
-
-//configs
+// Configs
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
 
-
-//passport
+// Passport
 app.use(passport.initialize());
 
-
-//bind routes
-app.use("/api/v1/admin", doubleCsrfProtection, passport.authenticate('user-token', { session : false }),admin);
-app.use("/api/v1/user", doubleCsrfProtection, passport.authenticate('user-token', { session : false }),user);
-app.use('/api/v1/subject', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),universal);
-app.use('/api/v1/questions', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),question);
-app.use('/api/v1/test', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),testpaper);
-app.use('/api/v1/upload', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),up);
-app.use('/api/v1/trainer', doubleCsrfProtection, passport.authenticate('user-token', { session : false }),stopRegistration);
+// Bind Routes
+app.use("/api/v1/admin", doubleCsrfProtection, passport.authenticate('user-token', { session: false }), admin);
+app.use("/api/v1/user", doubleCsrfProtection, passport.authenticate('user-token', { session: false }), user);
+app.use('/api/v1/subject', doubleCsrfProtection, passport.authenticate('user-token', { session: false }), universal);
+app.use('/api/v1/questions', doubleCsrfProtection, passport.authenticate('user-token', { session: false }), question);
+app.use('/api/v1/test', doubleCsrfProtection, passport.authenticate('user-token', { session: false }), testpaper);
+app.use('/api/v1/upload', doubleCsrfProtection, passport.authenticate('user-token', { session: false }), up);
+app.use('/api/v1/trainer', doubleCsrfProtection, passport.authenticate('user-token', { session: false }), stopRegistration);
 app.use('/api/v1/trainee', doubleCsrfProtection, trainee);
 app.use('/api/v1/final', doubleCsrfProtection, results);
 app.use('/api/v1/lala', doubleCsrfProtection, dummy);
-
-
-
-
-
-
-
 app.use('/api/v1/login', doubleCsrfProtection, login);
 
 // Health check route for AWS Elastic Beanstalk
@@ -109,29 +96,26 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
 
-app.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname+'/public/index.html'));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/public/index.html'));
 });
 
-
-
-
-//error handlings
-app.use(function(req, res, next) {
-    next(createError(404,"Invalid API. Use the official documentation to get the list of valid APIS."));
+// Error handling
+app.use((req, res, next) => {
+    next(createError(404, "Invalid API. Use the official documentation to get the list of valid APIS."));
 });
 
-app.use((err, req, res, next)=>{
-    console.log(err);
+app.use((err, req, res, next) => {
+    console.error(err);
     res.status(err.status || 500).json({
-        success : false,
-        message : err.message || "Internal Server Error"
+        success: false,
+        message: err.message || "Internal Server Error"
     });
 });
 
-app.listen(PORT,(err)=>{
-    if(err){
-      console.log(err);
+app.listen(PORT, (err) => {
+    if (err) {
+        console.error(err);
     }
     console.log(`Server Started. Server listening to port ${PORT}`);
-});
+});

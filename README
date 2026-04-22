@@ -60,3 +60,4 @@ To achieve full production stabilization, the following massive improvements wer
 3. **Password Expansion**: Resolved frustrating UX bottlenecks during Trainer additions. The restrictive `{max: 6}` character limit via express-validator in both the global Register and Login controllers was expanded to `{max: 100}`, with clear context-aware validation popups mapping directly back to the active user's form view.
 4. **AWS S3 Image & Report Storage Integration**: Shifted local disk uploads to external AWS S3 buckets to ensure continuous availability of uploaded test images and exported Excel documents regardless of Beanstalk scaling events.
 5. **Database Role Synchronization**: Fixed critical role-mismatch errors across the database ecosystem (via scripts like `fix_roles.py`). UI layouts and admin privileges now systematically toggle in the React frontend based on true strict string-matching for "ADMIN", "TRAINER", and "TRAINEE" user tiers.
+/graphify --update

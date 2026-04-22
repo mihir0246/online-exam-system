@@ -1,0 +1,11 @@
+# .graphifyignore
+node_modules/
+dist/
+.git/
+.gemini/
+.agents/
+graphify-out/
+build/
+*.log
+*.zip
+package-lock.json

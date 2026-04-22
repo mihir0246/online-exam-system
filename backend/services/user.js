@@ -1,4 +1,4 @@
-let userdetails = (req,res,next)=>{
+const userdetails = (req, res, next) => {
     res.json({
         success : true,
         message : 'successfull',
@@ -12,4 +12,4 @@ let userdetails = (req,res,next)=>{
     })
 }
 
-module.exports={userdetails}
+module.exports = { userdetails };

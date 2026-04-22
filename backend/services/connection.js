@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
-var config = require('config');
-let tool = require("./tool")
+const mongoose = require("mongoose");
+const config = require('config');
+const tool = require("./tool");
 
 
 
